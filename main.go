@@ -54,6 +54,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
 	body := readBody(resp)
+	webpage.HTMLVersion = checkHTMLVersion(body)
 	webpage.PageTitle = getHtmlElement(body, "title")[0] //todo clear readness
 	webpage.Headings.Counterh1 = len(getHtmlElement(body, "h1"))
 	webpage.Headings.Counterh2 = len(getHtmlElement(body, "h2"))
@@ -62,6 +63,16 @@ func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
 	webpage.Headings.Counterh5 = len(getHtmlElement(body, "h5"))
 	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(getHtmlElement(body, "a"))
 	return webpage
+}
+
+func checkHTMLVersion(body []byte) string {
+	if strings.Contains(string(body), "<!DOCTYPE html>") {
+		return "HTML5 doctype"
+	} else if strings.Contains(string(body), "DTD HTML 4.01") {
+		return "HTML 4.01 doctype"
+	} else {
+		return "Couldn't find HTML version"
+	}
 }
 
 func countLinks(s []string) (int, int) {
@@ -91,13 +102,7 @@ func readBody(resp *http.Response) []byte {
 
 //todo add err
 func getHtmlElement(body []byte, htmlElement string) []string {
-	//converts http.Response.Body to *html.Node
-	
 	doc, _ := html.Parse(strings.NewReader(string(body)))
-	
-	
-
-	//get html element
 	var element *html.Node
 	var stringElements []string
 	var f func(*html.Node)
@@ -113,7 +118,6 @@ func getHtmlElement(body []byte, htmlElement string) []string {
 	f(doc)
 	return stringElements
 }
-
 
 func formatHtml(element *html.Node) string{
 	var buffer bytes.Buffer
