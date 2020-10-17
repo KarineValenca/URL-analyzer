@@ -62,6 +62,7 @@ func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
 	webpage.Headings.Counterh4 = len(getHtmlElement(body, "h4"))
 	webpage.Headings.Counterh5 = len(getHtmlElement(body, "h5"))
 	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(getHtmlElement(body, "a"))
+	fmt.Println(getLinks(body))
 	return webpage
 }
 
@@ -86,6 +87,41 @@ func countLinks(s []string) (int, int) {
 		}
 	}
 	return internalLinks, externalLinks
+}
+
+func getLinks(body []byte) []string{
+	var urls []string
+	doc, _ := html.Parse(strings.NewReader(string(body)))
+	var f func(*html.Node)
+	f = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "a" {
+			//TODO just works if href appears just before a tag
+			for _, link := range n.Attr {
+				if link.Key == "href" {
+					url := buildUrl("https://golang.org/", link.Val)
+					urls = append(urls, url)
+					break
+				}
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			f(c)
+		}
+	}
+	f(doc)
+	return urls
+}
+
+func buildUrl(domain string, url string) string {
+	if strings.HasSuffix(domain, "/") {
+		domain = domain[:len(domain)-len("/")]
+	}
+	fmt.Println(domain)
+	if strings.Contains(url, "http") {
+		return url
+	} else {
+		return domain+url
+	}
 }
 
 func readBody(resp *http.Response) []byte {
