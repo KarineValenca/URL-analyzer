@@ -53,13 +53,14 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
-	webpage.PageTitle = getHtmlElement(resp, "title")[0] //todo clear readness
-	webpage.Headings.Counterh1 = len(getHtmlElement(resp, "h1"))
-	webpage.Headings.Counterh2 = len(getHtmlElement(resp, "h2"))
-	webpage.Headings.Counterh3 = len(getHtmlElement(resp, "h3"))
-	webpage.Headings.Counterh4 = len(getHtmlElement(resp, "h4"))
-	webpage.Headings.Counterh5 = len(getHtmlElement(resp, "h5"))
-	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(getHtmlElement(resp, "a"))
+	body := readBody(resp)
+	webpage.PageTitle = getHtmlElement(body, "title")[0] //todo clear readness
+	webpage.Headings.Counterh1 = len(getHtmlElement(body, "h1"))
+	webpage.Headings.Counterh2 = len(getHtmlElement(body, "h2"))
+	webpage.Headings.Counterh3 = len(getHtmlElement(body, "h3"))
+	webpage.Headings.Counterh4 = len(getHtmlElement(body, "h4"))
+	webpage.Headings.Counterh5 = len(getHtmlElement(body, "h5"))
+	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(getHtmlElement(body, "a"))
 	return webpage
 }
 
@@ -70,26 +71,31 @@ func countLinks(s []string) (int, int) {
 		if strings.Contains(s[i], "http") {
 			externalLinks++
 		} else{
-			internalLinks ++
+			internalLinks++
 		}
 	}
 	return internalLinks, externalLinks
 }
 
-//todo add err
-func getHtmlElement(resp *http.Response, htmlElement string) []string {
-	//converts http.Response.Body to *html.Node
+func readBody(resp *http.Response) []byte {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body) 
 	if err != nil {
-		fmt.Println("Erro do body")
 		log.Fatal(err)
 	}
 
-	doc, _ := html.Parse(strings.NewReader(string(body)))
-	
 	//restore the io.readcloser to its original state
 	resp.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+	return body
+}
+
+//todo add err
+func getHtmlElement(body []byte, htmlElement string) []string {
+	//converts http.Response.Body to *html.Node
+	
+	doc, _ := html.Parse(strings.NewReader(string(body)))
+	
+	
 
 	//get html element
 	var element *html.Node
