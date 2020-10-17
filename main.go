@@ -9,16 +9,25 @@ import (
 	"bytes"
 	"io"
 	"html/template"
+	"log"
 )
 
 type WebPage struct {
 	HTMLVersion string
 	PageTitle string
-	Headings []string
+	Headings Heading
 	CounterInternalLinks int
 	CounterExternalLinks int
 	CounterInaccessibleLinks int
 	ContainsLoginForm bool
+}
+
+type Heading struct {
+	Counterh1 int
+	Counterh2 int
+	Counterh3 int
+	Counterh4 int
+	Counterh5 int
 }
 
 var tpl *template.Template
@@ -26,13 +35,11 @@ var tpl *template.Template
 func init() {
 	tpl = template.Must(template.ParseGlob("templates/*"))
 }
-func main()  {
-	
+
+func main()  {	
 	http.HandleFunc("/", index)
 	http.ListenAndServe(":8080", nil)
 }
-
-
 
 func index(w http.ResponseWriter, r *http.Request) {
 	resp, err := http.Get("https://golang.org/")
@@ -41,18 +48,34 @@ func index(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	var webpage WebPage
-	webpage.PageTitle = getHtmlElement(resp, "title")[0] //todo
- 	fmt.Println(webpage.PageTitle)
+	webpage = buildWebPageInfo(webpage, resp)
 	tpl.ExecuteTemplate(w, "index.gohtml", webpage)
 }
 
+func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
+	webpage.PageTitle = getHtmlElement(resp, "title")[0] //todo clear readness
+	webpage.Headings.Counterh1 = len(getHtmlElement(resp, "h1"))
+	webpage.Headings.Counterh2 = len(getHtmlElement(resp, "h2"))
+	webpage.Headings.Counterh3 = len(getHtmlElement(resp, "h3"))
+	webpage.Headings.Counterh4 = len(getHtmlElement(resp, "h4"))
+	webpage.Headings.Counterh5 = len(getHtmlElement(resp, "h5"))
+	return webpage
+}
 
+//todo add err
 func getHtmlElement(resp *http.Response, htmlElement string) []string {
 	//converts http.Response.Body to *html.Node
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(body))
+	body, err := ioutil.ReadAll(resp.Body) 
+	if err != nil {
+		fmt.Println("Erro do body")
+		log.Fatal(err)
+	}
+
 	doc, _ := html.Parse(strings.NewReader(string(body)))
+	
+	//restore the io.readcloser to its original state
+	resp.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 
 	//get html element
 	var element *html.Node
