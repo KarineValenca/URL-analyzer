@@ -59,7 +59,21 @@ func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
 	webpage.Headings.Counterh3 = len(getHtmlElement(resp, "h3"))
 	webpage.Headings.Counterh4 = len(getHtmlElement(resp, "h4"))
 	webpage.Headings.Counterh5 = len(getHtmlElement(resp, "h5"))
+	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(getHtmlElement(resp, "a"))
 	return webpage
+}
+
+func countLinks(s []string) (int, int) {
+	externalLinks := 0
+	internalLinks := 0
+	for i, _ := range s {
+		if strings.Contains(s[i], "http") {
+			externalLinks++
+		} else{
+			internalLinks ++
+		}
+	}
+	return internalLinks, externalLinks
 }
 
 //todo add err
