@@ -10,6 +10,7 @@ import (
 	"io"
 	"html/template"
 	"log"
+	"regexp"
 )
 
 type WebPage struct {
@@ -62,7 +63,7 @@ func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
 	webpage.Headings.Counterh4 = len(getHtmlElement(body, "h4"))
 	webpage.Headings.Counterh5 = len(getHtmlElement(body, "h5"))
 	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(getHtmlElement(body, "a"))
-	fmt.Println(getLinks(body))
+	webpage.CounterInaccessibleLinks = countInaccessibleLinks(getLinks(body))
 	return webpage
 }
 
@@ -98,6 +99,7 @@ func getLinks(body []byte) []string{
 			//TODO just works if href appears just before a tag
 			for _, link := range n.Attr {
 				if link.Key == "href" {
+					//TODO change to get domain
 					url := buildUrl("https://golang.org/", link.Val)
 					urls = append(urls, url)
 					break
@@ -116,12 +118,26 @@ func buildUrl(domain string, url string) string {
 	if strings.HasSuffix(domain, "/") {
 		domain = domain[:len(domain)-len("/")]
 	}
-	fmt.Println(domain)
 	if strings.Contains(url, "http") {
 		return url
 	} else {
 		return domain+url
 	}
+}
+
+func countInaccessibleLinks(urls []string) int {
+	inaccessibleLinks := 0
+	for i, _ := range urls {
+		resp, err := http.Get(urls[i])
+		if err != nil {
+			inaccessibleLinks++
+		}
+		errRegex := regexp.MustCompile(`(4..|5..)`)
+		if errRegex.Match([]byte(resp.Status)) {
+			inaccessibleLinks++
+		}
+	}
+	return inaccessibleLinks
 }
 
 func readBody(resp *http.Response) []byte {
@@ -136,7 +152,7 @@ func readBody(resp *http.Response) []byte {
 	return body
 }
 
-//todo add err
+//TODO add err
 func getHtmlElement(body []byte, htmlElement string) []string {
 	doc, _ := html.Parse(strings.NewReader(string(body)))
 	var element *html.Node
