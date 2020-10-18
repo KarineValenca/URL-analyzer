@@ -59,12 +59,12 @@ func buildWebPageInfo(webpage webPage, resp *http.Response) webPage {
 	bodyParsed := utils.ParseBody(body)
 	webpage.HTMLVersion = checkHTMLVersion(body)
 	webpage.PageTitle = getPageTitle(bodyParsed)
-	webpage.Headings.Counterh1 = len(utils.GetHtmlElement(bodyParsed, "h1"))
-	webpage.Headings.Counterh2 = len(utils.GetHtmlElement(bodyParsed, "h2"))
-	webpage.Headings.Counterh3 = len(utils.GetHtmlElement(bodyParsed, "h3"))
-	webpage.Headings.Counterh4 = len(utils.GetHtmlElement(bodyParsed, "h4"))
-	webpage.Headings.Counterh5 = len(utils.GetHtmlElement(bodyParsed, "h5"))
-	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(utils.GetHtmlElement(bodyParsed, "a"))
+	webpage.Headings.Counterh1 = len(utils.GetHTMLElement(bodyParsed, "h1"))
+	webpage.Headings.Counterh2 = len(utils.GetHTMLElement(bodyParsed, "h2"))
+	webpage.Headings.Counterh3 = len(utils.GetHTMLElement(bodyParsed, "h3"))
+	webpage.Headings.Counterh4 = len(utils.GetHTMLElement(bodyParsed, "h4"))
+	webpage.Headings.Counterh5 = len(utils.GetHTMLElement(bodyParsed, "h5"))
+	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(utils.GetHTMLElement(bodyParsed, "a"))
 	webpage.CounterInaccessibleLinks = countInaccessibleLinks(utils.GetLinks(bodyParsed, webpage.URL))
 	webpage.ContainsLoginForm = checkLoginFormPresence(bodyParsed)
 	return webpage
@@ -81,7 +81,7 @@ func checkHTMLVersion(body []byte) string {
 }
 
 func getPageTitle(body *html.Node) string {
-	titles := utils.GetHtmlElement(body, "title")
+	titles := utils.GetHTMLElement(body, "title")
 	if len(titles) > 0 {
 		return titles[0]
 	}
@@ -123,7 +123,7 @@ func countInaccessibleLinks(urls []string) int {
 func checkLoginFormPresence(body *html.Node) bool{
 	containsEmail := false
 	containsPassword := false
-	inputs := utils.GetHtmlElement(body, "input")
+	inputs := utils.GetHTMLElement(body, "input")
 	for i := range inputs {
 		if strings.Contains(inputs[i], "email") || strings.Contains(inputs[i], "username") {
 			containsEmail = true
