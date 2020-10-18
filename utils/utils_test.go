@@ -56,7 +56,10 @@ func TestGetLinks(t *testing.T) {
 		</ul>
 	</body>
 	`
-	bodyParsed, _ := html.Parse(strings.NewReader(body))
+	bodyParsed, err := html.Parse(strings.NewReader(body))
+	if err != nil {
+		t.Log(err)
+	}
 	url := "https://golang.org/"
 	result := GetLinks(bodyParsed, url)
 	
@@ -76,7 +79,10 @@ func TestGetLinksWithClass(t *testing.T) {
 		</ul>
 	</body>
 	`
-	bodyParsed, _ := html.Parse(strings.NewReader(body))
+	bodyParsed, err := html.Parse(strings.NewReader(body))
+	if err != nil {
+		t.Log(err)
+	}
 	url := "https://golang.org/"
 	result := GetLinks(bodyParsed, url)
 	
@@ -95,7 +101,10 @@ func TestGetLinksNoLink(t *testing.T) {
 		</ul>
 	</body>
 	`
-	bodyParsed, _ := html.Parse(strings.NewReader(body))
+	bodyParsed, err := html.Parse(strings.NewReader(body))
+	if err != nil {
+		t.Log(err)
+	}
 	url := "https://golang.org/"
 	result := GetLinks(bodyParsed, url)
 	
@@ -112,7 +121,10 @@ func TestGetHtmlElements(t *testing.T) {
 		</ul>
 	</body>
 	`
-	bodyParsed, _ := html.Parse(strings.NewReader(body))
+	bodyParsed, err := html.Parse(strings.NewReader(body))
+	if err != nil {
+		t.Log(err)
+	}
 	htmlElement := "button"
 
 	result := GetHtmlElement(bodyParsed, htmlElement)
@@ -131,7 +143,10 @@ func TestGetHtmlElementsNoElement(t *testing.T) {
 		</ul>
 	</body>
 	`
-	bodyParsed, _ := html.Parse(strings.NewReader(body))
+	bodyParsed, err := html.Parse(strings.NewReader(body))
+	if err != nil {
+		t.Log(err)
+	}
 	htmlElement := "a"
 
 	result := GetHtmlElement(bodyParsed, htmlElement)
@@ -139,7 +154,10 @@ func TestGetHtmlElementsNoElement(t *testing.T) {
 }
 
 func TestReadBody(t *testing.T) {
-	resp, _ := http.Get("https://golang.org/")
+	resp, err := http.Get("https://golang.org/")
+	if err != nil {
+		t.Log(err)
+	}
 	result := ReadBody(resp)
 
 	assert.Contains(t, string(result), "<title>The Go Programming Language</title>")
