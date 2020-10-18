@@ -2,14 +2,12 @@ package main
 
 import (
 	"net/http"
-	"io/ioutil"
 	"strings"
 	"golang.org/x/net/html"
-	"bytes"
-	"io"
 	"html/template"
 	"log"
 	"regexp"
+	"github.com/KarineValenca/URL-analyzer/utils"
 )
 
 type WebPage struct {
@@ -57,7 +55,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
-	body := readBody(resp)
+	body := ReadBody(resp)
 	bodyParsed := parseBody(body)
 	webpage.HTMLVersion = checkHTMLVersion(body)
 	webpage.PageTitle = getPageTitle(bodyParsed)
@@ -139,31 +137,4 @@ func checkLoginFormPresence(body *html.Node) bool{
 	} else {
 		return false
 	}
-}
-
-func readBody(resp *http.Response) []byte {
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body) 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	//restore the io.readcloser to its original state
-	resp.Body = ioutil.NopCloser(bytes.NewBuffer(body))
-	return body
-}
-
-func parseBody(body []byte) *html.Node {
-	bodyParsed, err := html.Parse(strings.NewReader(string(body)))
-	if err != nil {
-		log.Println(err)
-	}
-	return bodyParsed
-}
-
-func formatHtml(element *html.Node) string{
-	var buffer bytes.Buffer
-	w := io.Writer(&buffer)
-	html.Render(w, element)
-	return buffer.String()
 }

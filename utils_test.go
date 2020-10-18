@@ -5,6 +5,7 @@ import (
 	"strings"
 	"golang.org/x/net/html"
 	"github.com/stretchr/testify/assert"
+	"net/http"
 )
 
 func TestBuildUrlDomainWithSlashUrlPath(t *testing.T) {
@@ -135,4 +136,11 @@ func TestGetHtmlElementsNoElement(t *testing.T) {
 
 	result := getHtmlElement(bodyParsed, htmlElement)
 	assert.Equal(t, len(result), 0)
+}
+
+func TestReadBody(t *testing.T) {
+	resp, _ := http.Get("https://golang.org/")
+	result := readBody(resp)
+
+	assert.Contains(t, string(result), "<title>The Go Programming Language</title>")
 }

@@ -1,8 +1,13 @@
-package main
+package utils
 
 import (
 	"strings"
 	"golang.org/x/net/html"
+	"io/ioutil"
+	"net/http"
+	"log"
+	"bytes"
+	"io"
 )
 
 func buildUrl(domain string, path string) string {
@@ -46,6 +51,7 @@ func getHtmlElement(body *html.Node, htmlElement string) []string {
 	f = func(n *html.Node) {
 		if n.Type == html.ElementNode && n.Data == htmlElement {
 			element = n
+			log.Println(element)
 			stringElements = append(stringElements, formatHtml(element))
 		}
 		for c := n.FirstChild; c != nil; c = c.NextSibling {
@@ -55,3 +61,31 @@ func getHtmlElement(body *html.Node, htmlElement string) []string {
 	f(body)
 	return stringElements
 }
+
+func formatHtml(element *html.Node) string{
+	var buffer bytes.Buffer
+	w := io.Writer(&buffer)
+	html.Render(w, element)
+	return buffer.String()
+}
+
+func ReadBody(resp *http.Response) []byte {
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body) 
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//restore the io.readcloser to its original state
+	resp.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+	return body
+}
+
+func parseBody(body []byte) *html.Node {
+	bodyParsed, err := html.Parse(strings.NewReader(string(body)))
+	if err != nil {
+		log.Println(err)
+	}
+	return bodyParsed
+}
+
