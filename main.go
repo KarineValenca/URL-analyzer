@@ -58,16 +58,17 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
 	body := readBody(resp)
+	bodyParsed := parseBody(body)
 	webpage.HTMLVersion = checkHTMLVersion(body)
-	webpage.PageTitle = getPageTitle(body)
-	webpage.Headings.Counterh1 = len(getHtmlElement(body, "h1"))
-	webpage.Headings.Counterh2 = len(getHtmlElement(body, "h2"))
-	webpage.Headings.Counterh3 = len(getHtmlElement(body, "h3"))
-	webpage.Headings.Counterh4 = len(getHtmlElement(body, "h4"))
-	webpage.Headings.Counterh5 = len(getHtmlElement(body, "h5"))
-	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(getHtmlElement(body, "a"))
-	webpage.CounterInaccessibleLinks = countInaccessibleLinks(getLinks(body, webpage.Url))
-	webpage.ContainsLoginForm = checkLoginFormPresence(body)
+	webpage.PageTitle = getPageTitle(bodyParsed)
+	webpage.Headings.Counterh1 = len(getHtmlElement(bodyParsed, "h1"))
+	webpage.Headings.Counterh2 = len(getHtmlElement(bodyParsed, "h2"))
+	webpage.Headings.Counterh3 = len(getHtmlElement(bodyParsed, "h3"))
+	webpage.Headings.Counterh4 = len(getHtmlElement(bodyParsed, "h4"))
+	webpage.Headings.Counterh5 = len(getHtmlElement(bodyParsed, "h5"))
+	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(getHtmlElement(bodyParsed, "a"))
+	webpage.CounterInaccessibleLinks = countInaccessibleLinks(getLinks(bodyParsed, webpage.Url))
+	webpage.ContainsLoginForm = checkLoginFormPresence(bodyParsed)
 	return webpage
 }
 
@@ -81,7 +82,7 @@ func checkHTMLVersion(body []byte) string {
 	}
 }
 
-func getPageTitle(body []byte) string {
+func getPageTitle(body *html.Node) string {
 	titles := getHtmlElement(body, "title")
 	if len(titles) > 0 {
 		return titles[0]
@@ -103,12 +104,8 @@ func countLinks(s []string) (int, int) {
 	return internalLinks, externalLinks
 }
 
-func getLinks(body []byte, url string) []string{
+func getLinks(body *html.Node, url string) []string{
 	var urls []string
-	doc, err := html.Parse(strings.NewReader(string(body)))
-	if err != nil {
-		log.Println(err)
-	}
 	var f func(*html.Node)
 	f = func(n *html.Node) {
 		if n.Type == html.ElementNode && n.Data == "a" {
@@ -126,7 +123,7 @@ func getLinks(body []byte, url string) []string{
 			f(c)
 		}
 	}
-	f(doc)
+	f(body)
 	return urls
 }
 
@@ -158,7 +155,7 @@ func countInaccessibleLinks(urls []string) int {
 	return inaccessibleLinks
 }
 
-func checkLoginFormPresence(body []byte) bool{
+func checkLoginFormPresence(body *html.Node) bool{
 	containsEmail := false
 	containsPassword := false
 	inputs := getHtmlElement(body, "input")
@@ -190,12 +187,15 @@ func readBody(resp *http.Response) []byte {
 	return body
 }
 
-//TODO add err
-func getHtmlElement(body []byte, htmlElement string) []string {
-	doc, err := html.Parse(strings.NewReader(string(body)))
+func parseBody(body []byte) *html.Node {
+	bodyParsed, err := html.Parse(strings.NewReader(string(body)))
 	if err != nil {
 		log.Println(err)
 	}
+	return bodyParsed
+}
+
+func getHtmlElement(body *html.Node, htmlElement string) []string {
 	var element *html.Node
 	var stringElements []string
 	var f func(*html.Node)
@@ -208,7 +208,7 @@ func getHtmlElement(body []byte, htmlElement string) []string {
 			f(c)
 		}
 	}
-	f(doc)
+	f(body)
 	return stringElements
 }
 
