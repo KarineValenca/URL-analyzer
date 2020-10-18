@@ -8,41 +8,41 @@ import (
 	"net/http"
 )
 
-func TestBuildUrlDomainWithSlashUrlPath(t *testing.T) {
+func TestBuildURLDomainWithSlashUrlPath(t *testing.T) {
 	// test for domain with slash and url as a path
 	domain := "https://golang.org/"
 	url := "/doc/"
 
-	result := BuildUrl(domain, url)
+	result := BuildURL(domain, url)
 
 	assert.Equal(t, result, "https://golang.org/doc/")
 	
 }
 
-func TestBuildUrlDomainWithoutSlashUrlPath(t *testing.T) {
+func TestBuildURLDomainWithoutSlashUrlPath(t *testing.T) {
 	// test for domain without slash and url as a path
 	domain := "https://golang.org"
 	url := "/doc/"
 
-	result := BuildUrl(domain, url)
+	result := BuildURL(domain, url)
 	assert.Equal(t, result, "https://golang.org/doc/")
 }
 
-func TestBuildUrlUrlHttpsLink(t *testing.T) {
+func TestBuildURLHttpsLink(t *testing.T) {
 	// test for url as a https link
 	domain := "https://golang.org/"
 	url := "https://golang.org/"
 
-	result := BuildUrl(domain, url)
+	result := BuildURL(domain, url)
 	assert.Equal(t, result, "https://golang.org/")
 }
 
-func TestBuildUrlUrlHttpLink(t *testing.T) {
+func TestBuildURLHttpLink(t *testing.T) {
 	// test for url as a http link
 	domain := "http://golang.org/"
 	url := "http://golang.org/"
 
-	result := BuildUrl(domain, url)
+	result := BuildURL(domain, url)
 	assert.Equal(t, result, "http://golang.org/")
 }
 
@@ -111,7 +111,7 @@ func TestGetLinksNoLink(t *testing.T) {
 	assert.Equal(t, len(result), 0)
 }
 
-func TestGetHtmlElements(t *testing.T) {
+func TestGetHTMLElements(t *testing.T) {
 	body := `
 	<body class="Site">
 		<button class="Button js-playgroundShareEl" title="Share this code">Share</button>
@@ -127,13 +127,13 @@ func TestGetHtmlElements(t *testing.T) {
 	}
 	htmlElement := "button"
 
-	result := GetHtmlElement(bodyParsed, htmlElement)
+	result := GetHTMLElement(bodyParsed, htmlElement)
 	assert.Equal(t, len(result), 2)
 	assert.Contains(t, result, `<button class="Button js-playgroundShareEl" title="Share this code">Share</button>`)
 	assert.Contains(t, result, `<button class="Button js-playgroundShareEl" title="Like this code">Like</button>`)
 }
 
-func TestGetHtmlElementsNoElement(t *testing.T) {
+func TestGetHTMLElementsNoElement(t *testing.T) {
 	body := `
 	<body class="Site">
 		<button class="Button js-playgroundShareEl" title="Share this code">Share</button>
@@ -149,7 +149,7 @@ func TestGetHtmlElementsNoElement(t *testing.T) {
 	}
 	htmlElement := "a"
 
-	result := GetHtmlElement(bodyParsed, htmlElement)
+	result := GetHTMLElement(bodyParsed, htmlElement)
 	assert.Equal(t, len(result), 0)
 }
 

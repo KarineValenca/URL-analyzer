@@ -11,7 +11,7 @@ import (
 )
 
 type webPage struct {
-	Url string
+	URL string
 	HTMLVersion string
 	PageTitle string
 	Headings heading
@@ -43,8 +43,8 @@ func main()  {
 func index(w http.ResponseWriter, r *http.Request) {
 	var webpage webPage
 	if r.Method == http.MethodPost {
-		webpage.Url = r.FormValue("url")
-		resp, err := http.Get(webpage.Url)
+		webpage.URL = r.FormValue("url")
+		resp, err := http.Get(webpage.URL)
 		if err != nil {
 			log.Println(err)
 		}
@@ -65,7 +65,7 @@ func buildWebPageInfo(webpage webPage, resp *http.Response) webPage {
 	webpage.Headings.Counterh4 = len(utils.GetHtmlElement(bodyParsed, "h4"))
 	webpage.Headings.Counterh5 = len(utils.GetHtmlElement(bodyParsed, "h5"))
 	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(utils.GetHtmlElement(bodyParsed, "a"))
-	webpage.CounterInaccessibleLinks = countInaccessibleLinks(utils.GetLinks(bodyParsed, webpage.Url))
+	webpage.CounterInaccessibleLinks = countInaccessibleLinks(utils.GetLinks(bodyParsed, webpage.URL))
 	webpage.ContainsLoginForm = checkLoginFormPresence(bodyParsed)
 	return webpage
 }

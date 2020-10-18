@@ -9,13 +9,13 @@ import (
 
 func TestBuildWebPageInfo(t *testing.T) {
 	var webpage webPage
-	webpage.Url = "https://golang.org/"
-	resp, err := http.Get(webpage.Url)
+	webpage.URL = "https://golang.org/"
+	resp, err := http.Get(webpage.URL)
 	if err != nil {
 		t.Log(err)
 	}
 	result := buildWebPageInfo(webpage, resp)
-	assert.Equal(t, result.Url, "https://golang.org/")
+	assert.Equal(t, result.URL, "https://golang.org/")
 	assert.Equal(t, result.HTMLVersion, "HTML5 doctype")
 	assert.Equal(t, result.PageTitle, "<title>The Go Programming Language</title>")
 	assert.Equal(t, result.Headings.Counterh1, 1)
