@@ -127,17 +127,6 @@ func getLinks(body *html.Node, url string) []string{
 	return urls
 }
 
-func buildUrl(domain string, url string) string {
-	if strings.HasSuffix(domain, "/") {
-		domain = domain[:len(domain)-len("/")]
-	}
-	if strings.Contains(url, "http://") || strings.Contains(url, "https://"){
-		return url
-	} else {
-		return domain+url
-	}
-}
-
 func countInaccessibleLinks(urls []string) int {
 	inaccessibleLinks := 0
 	for i, _ := range urls {
