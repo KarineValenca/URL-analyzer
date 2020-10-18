@@ -43,7 +43,7 @@ func main()  {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	resp, err := http.Get("https://golang.org/")
+	resp, err := http.Get("https://www.w3schools.com/howto/howto_css_login_form.asp")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -56,7 +56,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
 	body := readBody(resp)
 	webpage.HTMLVersion = checkHTMLVersion(body)
-	webpage.PageTitle = getHtmlElement(body, "title")[0] //todo clear readness
+	webpage.PageTitle = getPageTitle(body)
 	webpage.Headings.Counterh1 = len(getHtmlElement(body, "h1"))
 	webpage.Headings.Counterh2 = len(getHtmlElement(body, "h2"))
 	webpage.Headings.Counterh3 = len(getHtmlElement(body, "h3"))
@@ -64,6 +64,7 @@ func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
 	webpage.Headings.Counterh5 = len(getHtmlElement(body, "h5"))
 	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(getHtmlElement(body, "a"))
 	webpage.CounterInaccessibleLinks = countInaccessibleLinks(getLinks(body))
+	webpage.ContainsLoginForm = checkLoginFormPresence(body)
 	return webpage
 }
 
@@ -74,6 +75,15 @@ func checkHTMLVersion(body []byte) string {
 		return "HTML 4.01 doctype"
 	} else {
 		return "Couldn't find HTML version"
+	}
+}
+
+func getPageTitle(body []byte) string {
+	titles := getHtmlElement(body, "title")
+	if len(titles) > 0 {
+		return titles[0]
+	} else {
+		return "Page has no title"
 	}
 }
 
@@ -100,7 +110,7 @@ func getLinks(body []byte) []string{
 			for _, link := range n.Attr {
 				if link.Key == "href" {
 					//TODO change to get domain
-					url := buildUrl("https://golang.org/", link.Val)
+					url := buildUrl("https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_login_form_modal", link.Val)
 					urls = append(urls, url)
 					break
 				}
@@ -118,7 +128,7 @@ func buildUrl(domain string, url string) string {
 	if strings.HasSuffix(domain, "/") {
 		domain = domain[:len(domain)-len("/")]
 	}
-	if strings.Contains(url, "http") {
+	if strings.Contains(url, "http://") || strings.Contains(url, "https://"){
 		return url
 	} else {
 		return domain+url
@@ -129,6 +139,7 @@ func countInaccessibleLinks(urls []string) int {
 	inaccessibleLinks := 0
 	for i, _ := range urls {
 		resp, err := http.Get(urls[i])
+		fmt.Println(urls[i])
 		if err != nil {
 			inaccessibleLinks++
 		}
@@ -138,6 +149,26 @@ func countInaccessibleLinks(urls []string) int {
 		}
 	}
 	return inaccessibleLinks
+}
+
+func checkLoginFormPresence(body []byte) bool{
+	containsEmail := false
+	containsPassword := false
+	inputs := getHtmlElement(body, "input")
+	for i, _ := range inputs {
+		if strings.Contains(inputs[i], "email") || strings.Contains(inputs[i], "username") {
+			containsEmail = true
+		}
+		if strings.Contains(inputs[i], "password") {
+			containsPassword = true
+		}
+	}
+
+	if containsEmail && containsPassword {
+		return true
+	} else {
+		return false
+	}
 }
 
 func readBody(resp *http.Response) []byte {
