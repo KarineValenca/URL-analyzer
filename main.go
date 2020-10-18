@@ -55,17 +55,17 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
-	body := ReadBody(resp)
-	bodyParsed := parseBody(body)
+	body := utils.ReadBody(resp)
+	bodyParsed := utils.ParseBody(body)
 	webpage.HTMLVersion = checkHTMLVersion(body)
 	webpage.PageTitle = getPageTitle(bodyParsed)
-	webpage.Headings.Counterh1 = len(getHtmlElement(bodyParsed, "h1"))
-	webpage.Headings.Counterh2 = len(getHtmlElement(bodyParsed, "h2"))
-	webpage.Headings.Counterh3 = len(getHtmlElement(bodyParsed, "h3"))
-	webpage.Headings.Counterh4 = len(getHtmlElement(bodyParsed, "h4"))
-	webpage.Headings.Counterh5 = len(getHtmlElement(bodyParsed, "h5"))
-	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(getHtmlElement(bodyParsed, "a"))
-	webpage.CounterInaccessibleLinks = countInaccessibleLinks(getLinks(bodyParsed, webpage.Url))
+	webpage.Headings.Counterh1 = len(utils.GetHtmlElement(bodyParsed, "h1"))
+	webpage.Headings.Counterh2 = len(utils.GetHtmlElement(bodyParsed, "h2"))
+	webpage.Headings.Counterh3 = len(utils.GetHtmlElement(bodyParsed, "h3"))
+	webpage.Headings.Counterh4 = len(utils.GetHtmlElement(bodyParsed, "h4"))
+	webpage.Headings.Counterh5 = len(utils.GetHtmlElement(bodyParsed, "h5"))
+	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(utils.GetHtmlElement(bodyParsed, "a"))
+	webpage.CounterInaccessibleLinks = countInaccessibleLinks(utils.GetLinks(bodyParsed, webpage.Url))
 	webpage.ContainsLoginForm = checkLoginFormPresence(bodyParsed)
 	return webpage
 }
@@ -81,7 +81,7 @@ func checkHTMLVersion(body []byte) string {
 }
 
 func getPageTitle(body *html.Node) string {
-	titles := getHtmlElement(body, "title")
+	titles := utils.GetHtmlElement(body, "title")
 	if len(titles) > 0 {
 		return titles[0]
 	} else {
@@ -122,7 +122,7 @@ func countInaccessibleLinks(urls []string) int {
 func checkLoginFormPresence(body *html.Node) bool{
 	containsEmail := false
 	containsPassword := false
-	inputs := getHtmlElement(body, "input")
+	inputs := utils.GetHtmlElement(body, "input")
 	for i, _ := range inputs {
 		if strings.Contains(inputs[i], "email") || strings.Contains(inputs[i], "username") {
 			containsEmail = true
