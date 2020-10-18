@@ -10,7 +10,7 @@ import (
 	"io"
 )
 
-func buildUrl(domain string, path string) string {
+func BuildUrl(domain string, path string) string {
 	if strings.HasSuffix(domain, "/") {
 		domain = domain[:len(domain)-len("/")]
 	}
@@ -21,7 +21,7 @@ func buildUrl(domain string, path string) string {
 	}
 }
 
-func getLinks(body *html.Node, url string) []string{
+func GetLinks(body *html.Node, url string) []string{
 	var urls []string
 	var f func(*html.Node)
 	f = func(n *html.Node) {
@@ -30,7 +30,7 @@ func getLinks(body *html.Node, url string) []string{
 			for _, link := range n.Attr {
 				if link.Key == "href" {
 					//TODO change to get domain
-					url := buildUrl(url, link.Val)
+					url := BuildUrl(url, link.Val)
 					urls = append(urls, url)
 					break
 				}
@@ -44,14 +44,13 @@ func getLinks(body *html.Node, url string) []string{
 	return urls
 }
 
-func getHtmlElement(body *html.Node, htmlElement string) []string {
+func GetHtmlElement(body *html.Node, htmlElement string) []string {
 	var element *html.Node
 	var stringElements []string
 	var f func(*html.Node)
 	f = func(n *html.Node) {
 		if n.Type == html.ElementNode && n.Data == htmlElement {
 			element = n
-			log.Println(element)
 			stringElements = append(stringElements, formatHtml(element))
 		}
 		for c := n.FirstChild; c != nil; c = c.NextSibling {
@@ -81,7 +80,7 @@ func ReadBody(resp *http.Response) []byte {
 	return body
 }
 
-func parseBody(body []byte) *html.Node {
+func ParseBody(body []byte) *html.Node {
 	bodyParsed, err := html.Parse(strings.NewReader(string(body)))
 	if err != nil {
 		log.Println(err)
