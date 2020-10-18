@@ -14,6 +14,7 @@ import (
 )
 
 type WebPage struct {
+	Url string
 	HTMLVersion string
 	PageTitle string
 	Headings Heading
@@ -43,13 +44,16 @@ func main()  {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	resp, err := http.Get("https://www.w3schools.com/howto/howto_css_login_form.asp")
-	if err != nil {
-		fmt.Println(err)
+	var webpage WebPage
+	if r.Method == http.MethodPost {
+		webpage.Url = r.FormValue("url")
+		resp, err := http.Get(webpage.Url)
+		if err != nil {
+			fmt.Println(err)
+		}
+		webpage = buildWebPageInfo(webpage, resp)
 	}
 	
-	var webpage WebPage
-	webpage = buildWebPageInfo(webpage, resp)
 	tpl.ExecuteTemplate(w, "index.gohtml", webpage)
 }
 
@@ -63,7 +67,7 @@ func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
 	webpage.Headings.Counterh4 = len(getHtmlElement(body, "h4"))
 	webpage.Headings.Counterh5 = len(getHtmlElement(body, "h5"))
 	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(getHtmlElement(body, "a"))
-	webpage.CounterInaccessibleLinks = countInaccessibleLinks(getLinks(body))
+	webpage.CounterInaccessibleLinks = countInaccessibleLinks(getLinks(body, webpage.Url))
 	webpage.ContainsLoginForm = checkLoginFormPresence(body)
 	return webpage
 }
@@ -100,7 +104,7 @@ func countLinks(s []string) (int, int) {
 	return internalLinks, externalLinks
 }
 
-func getLinks(body []byte) []string{
+func getLinks(body []byte, url string) []string{
 	var urls []string
 	doc, _ := html.Parse(strings.NewReader(string(body)))
 	var f func(*html.Node)
@@ -110,7 +114,7 @@ func getLinks(body []byte) []string{
 			for _, link := range n.Attr {
 				if link.Key == "href" {
 					//TODO change to get domain
-					url := buildUrl("https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_login_form_modal", link.Val)
+					url := buildUrl(url, link.Val)
 					urls = append(urls, url)
 					break
 				}
@@ -139,7 +143,6 @@ func countInaccessibleLinks(urls []string) int {
 	inaccessibleLinks := 0
 	for i, _ := range urls {
 		resp, err := http.Get(urls[i])
-		fmt.Println(urls[i])
 		if err != nil {
 			inaccessibleLinks++
 		}

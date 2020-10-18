@@ -6,18 +6,26 @@
 </head>
 <body>
 
-{{ .HTMLVersion}}
-{{ .PageTitle }}
+<form method="post">
+    <label for="url"><b>Insert the website URL:</b></label><br />
+    <input type="text" name="url" placeholder="url" value={{ .Url }}>
+    <input type="submit">
+</form>
+<br />
 
-{{ .Headings.Counterh1 }}
-{{ .Headings.Counterh2 }}
-{{ .Headings.Counterh3 }}
-{{ .Headings.Counterh4 }}
-{{ .Headings.Counterh5 }}
+{{ if .HTMLVersion }}
+<b>HTML Version:</b> {{ .HTMLVersion }} <br />
+<b>Page Title:</b> {{ .PageTitle }} <br />
+<b>Counter h1:</b> {{ .Headings.Counterh1 }} <br />
+<b>Counter h2:</b> {{ .Headings.Counterh2 }} <br />
+<b>Counter h3:</b> {{ .Headings.Counterh3 }} <br />
+<b>Counter h4:</b> {{ .Headings.Counterh4 }} <br />
+<b>Counter h5:</b> {{ .Headings.Counterh5 }} <br />
 
-{{ .CounterInternalLinks }}
-{{ .CounterExternalLinks }}
-{{ .CounterInaccessibleLinks }}
-{{ .ContainsLoginForm }}
+<b>Counter Internal Links:</b> {{ .CounterInternalLinks }} <br />
+<b>Counter External Links:</b> {{ .CounterExternalLinks }} <br />
+<b>Counter Inaccessible Links:</b> {{ .CounterInaccessibleLinks }} <br />
+<b>Contains Login Form?</b> {{ .ContainsLoginForm }} <br />
+{{ end }}
 </body>
 </html>
