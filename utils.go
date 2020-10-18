@@ -38,3 +38,20 @@ func getLinks(body *html.Node, url string) []string{
 	f(body)
 	return urls
 }
+
+func getHtmlElement(body *html.Node, htmlElement string) []string {
+	var element *html.Node
+	var stringElements []string
+	var f func(*html.Node)
+	f = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == htmlElement {
+			element = n
+			stringElements = append(stringElements, formatHtml(element))
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			f(c)
+		}
+	}
+	f(body)
+	return stringElements
+}

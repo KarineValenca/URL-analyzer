@@ -100,3 +100,39 @@ func TestGetLinksNoLink(t *testing.T) {
 	
 	assert.Equal(t, len(result), 0)
 }
+
+func TestGetHtmlElements(t *testing.T) {
+	body := `
+	<body class="Site">
+		<button class="Button js-playgroundShareEl" title="Share this code">Share</button>
+		<button class="Button js-playgroundShareEl" title="Like this code">Like</button>
+		<ul class="Footer-links">
+			  <li class="Footer-link"Copyright</li>
+		</ul>
+	</body>
+	`
+	bodyParsed, _ := html.Parse(strings.NewReader(body))
+	htmlElement := "button"
+
+	result := getHtmlElement(bodyParsed, htmlElement)
+	assert.Equal(t, len(result), 2)
+	assert.Contains(t, result, `<button class="Button js-playgroundShareEl" title="Share this code">Share</button>`)
+	assert.Contains(t, result, `<button class="Button js-playgroundShareEl" title="Like this code">Like</button>`)
+}
+
+func TestGetHtmlElementsNoElement(t *testing.T) {
+	body := `
+	<body class="Site">
+		<button class="Button js-playgroundShareEl" title="Share this code">Share</button>
+		<button class="Button js-playgroundShareEl" title="Like this code">Like</button>
+		<ul class="Footer-links">
+			  <li class="Footer-link"Copyright</li>
+		</ul>
+	</body>
+	`
+	bodyParsed, _ := html.Parse(strings.NewReader(body))
+	htmlElement := "a"
+
+	result := getHtmlElement(bodyParsed, htmlElement)
+	assert.Equal(t, len(result), 0)
+}
