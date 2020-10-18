@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"io/ioutil"
 	"strings"
@@ -49,7 +48,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		webpage.Url = r.FormValue("url")
 		resp, err := http.Get(webpage.Url)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
 		webpage = buildWebPageInfo(webpage, resp)
 	}
@@ -106,7 +105,10 @@ func countLinks(s []string) (int, int) {
 
 func getLinks(body []byte, url string) []string{
 	var urls []string
-	doc, _ := html.Parse(strings.NewReader(string(body)))
+	doc, err := html.Parse(strings.NewReader(string(body)))
+	if err != nil {
+		log.Println(err)
+	}
 	var f func(*html.Node)
 	f = func(n *html.Node) {
 		if n.Type == html.ElementNode && n.Data == "a" {
@@ -144,7 +146,9 @@ func countInaccessibleLinks(urls []string) int {
 	for i, _ := range urls {
 		resp, err := http.Get(urls[i])
 		if err != nil {
+			log.Println(err)
 			inaccessibleLinks++
+			continue
 		}
 		errRegex := regexp.MustCompile(`(4..|5..)`)
 		if errRegex.Match([]byte(resp.Status)) {
@@ -188,7 +192,10 @@ func readBody(resp *http.Response) []byte {
 
 //TODO add err
 func getHtmlElement(body []byte, htmlElement string) []string {
-	doc, _ := html.Parse(strings.NewReader(string(body)))
+	doc, err := html.Parse(strings.NewReader(string(body)))
+	if err != nil {
+		log.Println(err)
+	}
 	var element *html.Node
 	var stringElements []string
 	var f func(*html.Node)
