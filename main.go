@@ -10,18 +10,18 @@ import (
 	"github.com/KarineValenca/URL-analyzer/utils"
 )
 
-type WebPage struct {
+type webPage struct {
 	Url string
 	HTMLVersion string
 	PageTitle string
-	Headings Heading
+	Headings heading
 	CounterInternalLinks int
 	CounterExternalLinks int
 	CounterInaccessibleLinks int
 	ContainsLoginForm bool
 }
 
-type Heading struct {
+type heading struct {
 	Counterh1 int
 	Counterh2 int
 	Counterh3 int
@@ -41,7 +41,7 @@ func main()  {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	var webpage WebPage
+	var webpage webPage
 	if r.Method == http.MethodPost {
 		webpage.Url = r.FormValue("url")
 		resp, err := http.Get(webpage.Url)
@@ -54,7 +54,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	tpl.ExecuteTemplate(w, "index.gohtml", webpage)
 }
 
-func buildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
+func buildWebPageInfo(webpage webPage, resp *http.Response) webPage {
 	body := utils.ReadBody(resp)
 	bodyParsed := utils.ParseBody(body)
 	webpage.HTMLVersion = checkHTMLVersion(body)
@@ -84,15 +84,16 @@ func getPageTitle(body *html.Node) string {
 	titles := utils.GetHtmlElement(body, "title")
 	if len(titles) > 0 {
 		return titles[0]
-	} else {
-		return "Page has no title"
 	}
+	
+	return "Page has no title"
+	
 }
 
 func countLinks(s []string) (int, int) {
 	externalLinks := 0
 	internalLinks := 0
-	for i, _ := range s {
+	for i := range s {
 		if strings.Contains(s[i], "http") {
 			externalLinks++
 		} else{
@@ -104,7 +105,7 @@ func countLinks(s []string) (int, int) {
 
 func countInaccessibleLinks(urls []string) int {
 	inaccessibleLinks := 0
-	for i, _ := range urls {
+	for i := range urls {
 		resp, err := http.Get(urls[i])
 		if err != nil {
 			log.Println(err)
@@ -123,7 +124,7 @@ func checkLoginFormPresence(body *html.Node) bool{
 	containsEmail := false
 	containsPassword := false
 	inputs := utils.GetHtmlElement(body, "input")
-	for i, _ := range inputs {
+	for i := range inputs {
 		if strings.Contains(inputs[i], "email") || strings.Contains(inputs[i], "username") {
 			containsEmail = true
 		}
@@ -134,7 +135,8 @@ func checkLoginFormPresence(body *html.Node) bool{
 
 	if containsEmail && containsPassword {
 		return true
-	} else {
-		return false
-	}
+	} 
+	
+	return false
+	
 }

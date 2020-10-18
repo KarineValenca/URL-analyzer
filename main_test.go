@@ -8,7 +8,7 @@ import (
 )
 
 func TestBuildWebPageInfo(t *testing.T) {
-	var webpage WebPage
+	var webpage webPage
 	webpage.Url = "https://golang.org/"
 	resp, err := http.Get(webpage.Url)
 	if err != nil {
