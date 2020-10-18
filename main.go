@@ -1,24 +1,24 @@
 package main
 
 import (
-	"net/http"
-	"strings"
+	"github.com/KarineValenca/URL-analyzer/utils"
 	"golang.org/x/net/html"
 	"html/template"
 	"log"
+	"net/http"
 	"regexp"
-	"github.com/KarineValenca/URL-analyzer/utils"
+	"strings"
 )
 
 type webPage struct {
-	URL string
-	HTMLVersion string
-	PageTitle string
-	Headings heading
-	CounterInternalLinks int
-	CounterExternalLinks int
+	URL                      string
+	HTMLVersion              string
+	PageTitle                string
+	Headings                 heading
+	CounterInternalLinks     int
+	CounterExternalLinks     int
 	CounterInaccessibleLinks int
-	ContainsLoginForm bool
+	ContainsLoginForm        bool
 }
 
 type heading struct {
@@ -35,7 +35,7 @@ func init() {
 	tpl = template.Must(template.ParseGlob("templates/*"))
 }
 
-func main()  {	
+func main() {
 	http.HandleFunc("/", index)
 	http.ListenAndServe(":8080", nil)
 }
@@ -50,7 +50,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		}
 		webpage = buildWebPageInfo(webpage, resp)
 	}
-	
+
 	tpl.ExecuteTemplate(w, "index.gohtml", webpage)
 }
 
@@ -85,9 +85,9 @@ func getPageTitle(body *html.Node) string {
 	if len(titles) > 0 {
 		return titles[0]
 	}
-	
+
 	return "Page has no title"
-	
+
 }
 
 func countLinks(s []string) (int, int) {
@@ -96,7 +96,7 @@ func countLinks(s []string) (int, int) {
 	for i := range s {
 		if strings.Contains(s[i], "http") {
 			externalLinks++
-		} else{
+		} else {
 			internalLinks++
 		}
 	}
@@ -120,7 +120,7 @@ func countInaccessibleLinks(urls []string) int {
 	return inaccessibleLinks
 }
 
-func checkLoginFormPresence(body *html.Node) bool{
+func checkLoginFormPresence(body *html.Node) bool {
 	containsEmail := false
 	containsPassword := false
 	inputs := utils.GetHTMLElement(body, "input")
@@ -135,8 +135,8 @@ func checkLoginFormPresence(body *html.Node) bool{
 
 	if containsEmail && containsPassword {
 		return true
-	} 
-	
+	}
+
 	return false
-	
+
 }

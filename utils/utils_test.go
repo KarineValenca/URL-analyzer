@@ -1,11 +1,11 @@
 package utils
 
 import (
-	"testing"
-	"strings"
-	"golang.org/x/net/html"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/net/html"
 	"net/http"
+	"strings"
+	"testing"
 )
 
 func TestBuildURLDomainWithSlashUrlPath(t *testing.T) {
@@ -16,7 +16,7 @@ func TestBuildURLDomainWithSlashUrlPath(t *testing.T) {
 	result := BuildURL(domain, url)
 
 	assert.Equal(t, result, "https://golang.org/doc/")
-	
+
 }
 
 func TestBuildURLDomainWithoutSlashUrlPath(t *testing.T) {
@@ -62,7 +62,7 @@ func TestGetLinks(t *testing.T) {
 	}
 	url := "https://golang.org/"
 	result := GetLinks(bodyParsed, url)
-	
+
 	assert.Equal(t, len(result), 2)
 	assert.Contains(t, result, "https://tour.golang.org/")
 	assert.Contains(t, result, "https://golang.org/doc/copyright.html")
@@ -85,7 +85,7 @@ func TestGetLinksWithClass(t *testing.T) {
 	}
 	url := "https://golang.org/"
 	result := GetLinks(bodyParsed, url)
-	
+
 	assert.Equal(t, len(result), 2)
 	assert.Contains(t, result, "https://tour.golang.org/")
 	assert.Contains(t, result, "https://golang.org/doc/copyright.html")
@@ -107,7 +107,7 @@ func TestGetLinksNoLink(t *testing.T) {
 	}
 	url := "https://golang.org/"
 	result := GetLinks(bodyParsed, url)
-	
+
 	assert.Equal(t, len(result), 0)
 }
 

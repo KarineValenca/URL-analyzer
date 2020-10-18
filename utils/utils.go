@@ -1,13 +1,13 @@
 package utils
 
 import (
-	"strings"
-	"golang.org/x/net/html"
-	"io/ioutil"
-	"net/http"
-	"log"
 	"bytes"
+	"golang.org/x/net/html"
 	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strings"
 )
 
 //BuildURL - Builds a URL in https://www.example.com/ format
@@ -15,15 +15,15 @@ func BuildURL(domain string, path string) string {
 	if strings.HasSuffix(domain, "/") {
 		domain = domain[:len(domain)-len("/")]
 	}
-	if strings.Contains(path, "http://") || strings.Contains(path, "https://"){
+	if strings.Contains(path, "http://") || strings.Contains(path, "https://") {
 		return path
-	} 
+	}
 
-	return domain+path
+	return domain + path
 }
 
 //GetLinks - returns an array with all links found in the page
-func GetLinks(body *html.Node, url string) []string{
+func GetLinks(body *html.Node, url string) []string {
 	var urls []string
 	var f func(*html.Node)
 	f = func(n *html.Node) {
@@ -46,7 +46,7 @@ func GetLinks(body *html.Node, url string) []string{
 	return urls
 }
 
-//GetHTMLElement - returns an array with all html element found in the page 
+//GetHTMLElement - returns an array with all html element found in the page
 func GetHTMLElement(body *html.Node, htmlElement string) []string {
 	var element *html.Node
 	var stringElements []string
@@ -64,7 +64,7 @@ func GetHTMLElement(body *html.Node, htmlElement string) []string {
 	return stringElements
 }
 
-func formatHTML(element *html.Node) string{
+func formatHTML(element *html.Node) string {
 	var buffer bytes.Buffer
 	w := io.Writer(&buffer)
 	html.Render(w, element)
@@ -74,7 +74,7 @@ func formatHTML(element *html.Node) string{
 //ReadBody - return an array of bytes of the resp.Body
 func ReadBody(resp *http.Response) []byte {
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body) 
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,4 +92,3 @@ func ParseBody(body []byte) *html.Node {
 	}
 	return bodyParsed
 }
-

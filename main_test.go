@@ -1,10 +1,10 @@
 package main
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"github.com/KarineValenca/URL-analyzer/utils"
+	"github.com/stretchr/testify/assert"
 	"net/http"
+	"testing"
 )
 
 func TestBuildWebPageInfo(t *testing.T) {
