@@ -104,29 +104,6 @@ func countLinks(s []string) (int, int) {
 	return internalLinks, externalLinks
 }
 
-func getLinks(body *html.Node, url string) []string{
-	var urls []string
-	var f func(*html.Node)
-	f = func(n *html.Node) {
-		if n.Type == html.ElementNode && n.Data == "a" {
-			//TODO just works if href appears just before a tag
-			for _, link := range n.Attr {
-				if link.Key == "href" {
-					//TODO change to get domain
-					url := buildUrl(url, link.Val)
-					urls = append(urls, url)
-					break
-				}
-			}
-		}
-		for c := n.FirstChild; c != nil; c = c.NextSibling {
-			f(c)
-		}
-	}
-	f(body)
-	return urls
-}
-
 func countInaccessibleLinks(urls []string) int {
 	inaccessibleLinks := 0
 	for i, _ := range urls {
