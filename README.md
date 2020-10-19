@@ -33,6 +33,7 @@ Insert the URL and submit:
 
 ![Form](https://github.com/KarineValenca/URL-analyzer/blob/master/assets/image1.png
 )
+
 Wait some seconds until the app finishes the requests to the links, and you will see the result:
 
 ![Result](https://github.com/KarineValenca/URL-analyzer/blob/master/assets/image2.png)
