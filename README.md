@@ -5,6 +5,8 @@ A web application to analyze web pages.
 
 ## Installation
 
+You can install it in two ways:
+
 ### Docker 
 1. Clone this project
 
@@ -28,9 +30,10 @@ A web application to analyze web pages.
 ## Usage
 
 Insert the URL and submit:
-
+![Form](https://github.com/KarineValenca/URL-analyzer/blob/master/assets/image1.png
+)
 Wait some seconds until the app finishes the requests to the links, and you will see the result:
-
+![Result](https://github.com/KarineValenca/URL-analyzer/blob/master/assets/image2.png)
 
 ## Tests
 TODO
