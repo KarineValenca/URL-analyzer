@@ -16,7 +16,7 @@ You can run this app in two ways:
 
 3. Run the image:
 
-`docker run -p 8080:8-8- url-analyzer`
+`docker run -p 8080:8080 url-analyzer`
 
 4. Access `localhost:8080`
 
@@ -39,5 +39,4 @@ Wait some seconds until the app finishes the requests to the links, and you will
 ![Result](https://github.com/KarineValenca/URL-analyzer/blob/master/assets/image2.png)
 
 ## Tests
-
 TODO
