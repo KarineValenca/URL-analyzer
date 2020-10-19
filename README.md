@@ -1,5 +1,6 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/KarineValenca/URL-analyzer)](https://goreportcard.com/report/github.com/KarineValenca/URL-analyzer)
 [![Actions Status](https://github.com/KarineValenca/URL-analyzer/workflows/build/badge.svg)](https://github.com/KarineValenca/URL-analyzer/actions)
+[![Actions Status](https://github.com/KarineValenca/URL-analyzer/workflows/test/badge.svg)](https://github.com/KarineValenca/URL-analyzer/actions)
 
 
 # URL Analyzer
