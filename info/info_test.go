@@ -61,7 +61,7 @@ func TestHtmlVersionHtml4(t *testing.T) {
 		</body>`)
 
 	result := checkHTMLVersion(body)
-	assert.Equal(t, result, "HTML 4.01 doctype")
+	assert.Equal(t, result, "HTML 4.01 Strict")
 }
 
 func TestHtmlVersionCantFindVersion(t *testing.T) {

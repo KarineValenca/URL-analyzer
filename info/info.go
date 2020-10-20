@@ -56,13 +56,25 @@ func BuildWebPageInfo(webpage WebPage) WebPage {
 }
 
 func checkHTMLVersion(body []byte) string {
-	if strings.Contains(string(body), "<!DOCTYPE html>") {
-		return "HTML5 doctype"
-	} else if strings.Contains(string(body), "DTD HTML 4.01") {
-		return "HTML 4.01 doctype"
-	} else {
-		return "Couldn't find HTML version"
+	var htmlVersionMap = map[string]string{
+		"HTML5 doctype":          "<!DOCTYPE html>",
+		"HTML 4.01 Transitional": "DTD HTML 4.01 Transitional",
+		"HTML 4.01 Frameset":     "DTD HTML 4.01 Frameset",
+		"HTML 4.01 Strict":       "DTD HTML 4.01",
+		"XHTML 1.0 Transitional": "DTD XHTML 1.0 Transitional",
+		"XHTML 1.0 Frameset":     "DTD XHTML 1.0 Frameset",
+		"XHTML 1.0 Strict":       "DTD XHTML 1.0 Strict",
+		"XHTML 1.1":              "DTD XHTML 1.1",
 	}
+
+	for key, value := range htmlVersionMap {
+		if strings.Contains(string(body), value) ||
+			strings.Contains(string(body), strings.ToLower(value)) {
+			return key
+		}
+	}
+
+	return "Couldn't find HTML version"
 }
 
 func getPageTitle(body *html.Node) string {
