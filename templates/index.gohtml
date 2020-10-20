@@ -6,9 +6,13 @@
 </head>
 <body>
 
+{{ if .Error }}
+    <b style="color:#FF0000"> {{ .Error }} </b> <br /> <br />
+{{ end }}
+
 <form method="post">
     <label for="url"><b>Insert the website URL:</b></label><br />
-    <input type="text" name="url" placeholder="url" value={{ .URL }}>
+    <input type="text" name="url" placeholder="url" required="true" value={{ .URL }}>
     <input type="submit">
 </form>
 <br />

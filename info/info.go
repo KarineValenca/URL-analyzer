@@ -19,6 +19,7 @@ type WebPage struct {
 	CounterExternalLinks     int
 	CounterInaccessibleLinks int
 	ContainsLoginForm        bool
+	Error					 string
 }
 
 type heading struct {

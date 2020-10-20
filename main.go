@@ -25,8 +25,11 @@ func index(w http.ResponseWriter, r *http.Request) {
 		resp, err := http.Get(webpage.URL)
 		if err != nil {
 			log.Println(err)
+			webpage.Error = "Invalid URL: try again"
 		}
-		webpage = info.BuildWebPageInfo(webpage, resp)
+		if resp != nil {
+			webpage = info.BuildWebPageInfo(webpage, resp)
+		}
 	}
 
 	tpl.ExecuteTemplate(w, "index.gohtml", webpage)
