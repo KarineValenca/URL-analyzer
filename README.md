@@ -42,4 +42,11 @@ Wait some seconds until the app finishes the requests to the links, and you will
 ![Result](https://github.com/KarineValenca/URL-analyzer/blob/master/assets/image2.png)
 
 ## Tests
-TODO
+
+To execute tests, run the command:
+
+`go test ./...` 
+
+To see the test coverage, run the command:
+
+`go test -cover ./...`

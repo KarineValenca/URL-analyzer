@@ -64,6 +64,14 @@ func GetHTMLElement(body *html.Node, htmlElement string) []string {
 	return stringElements
 }
 
+//FormatURL - adds http to the beggining of an URL it does not contain
+func FormatURL(url string) string {
+	if strings.Contains(url, "http://") || strings.Contains(url, "https://") {
+		return url
+	}
+	return "http://" + url
+}
+
 func formatHTML(element *html.Node) string {
 	var buffer bytes.Buffer
 	w := io.Writer(&buffer)

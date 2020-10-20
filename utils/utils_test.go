@@ -162,3 +162,17 @@ func TestReadBody(t *testing.T) {
 
 	assert.Contains(t, string(result), "<title>The Go Programming Language</title>")
 }
+
+func TestFormatURLFullURL(t *testing.T) {
+	url := "https://golang.org"
+	result := FormatURL(url)
+
+	assert.Equal(t, result, "https://golang.org")
+}
+
+func TestFormatURLIncompleteURL(t *testing.T) {
+	url := "golang.org"
+	result := FormatURL(url)
+
+	assert.Equal(t, result, "http://golang.org")
+}
