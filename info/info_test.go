@@ -1,4 +1,4 @@
-package main
+package info
 
 import (
 	"github.com/KarineValenca/URL-analyzer/utils"
@@ -8,13 +8,13 @@ import (
 )
 
 func TestBuildWebPageInfo(t *testing.T) {
-	var webpage webPage
+	var webpage WebPage
 	webpage.URL = "https://golang.org/"
 	resp, err := http.Get(webpage.URL)
 	if err != nil {
 		t.Log(err)
 	}
-	result := buildWebPageInfo(webpage, resp)
+	result := BuildWebPageInfo(webpage, resp)
 	assert.Equal(t, result.URL, "https://golang.org/")
 	assert.Equal(t, result.HTMLVersion, "HTML5 doctype")
 	assert.Equal(t, result.PageTitle, "<title>The Go Programming Language</title>")
