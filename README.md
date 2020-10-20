@@ -4,7 +4,19 @@
 
 
 # URL Analyzer
-A web application to analyze web pages.
+A web application to analyze web pages. The following information is provided:
+
+- HTML Version: The HTML version of the web page (eg. `HTML5 doctype`, `HTML 4.01 Strict`, `XHTML 1.1`)
+- Page Title: The <title> of the page.
+- Counter h1: Counter the quantity of <h1> tag in the page.
+- Counter h2: Counter the quantity of <h2> tag in the page.
+- Counter h3: Counter the quantity of <h3> tag in the page.
+- Counter h4: Counter the quantity of <h4> tag in the page.
+- Counter h4: Counter the quantity of <h5> tag in the page.
+- Counter internal links: Counter the quantity of subpath links (eg: `/docs`).
+- Counter external links: Counter the quantity of links with `http` or `https`.
+- Counter inaccessible links: Counter of the quantity of links that returned a 400 or a 500 status, or that return an error.
+- Contains Login form: Checks if the page includes inputs with labels `email` or `username` AND `password`. 
 
 ## Installation
 
