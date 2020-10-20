@@ -19,7 +19,7 @@ type WebPage struct {
 	CounterExternalLinks     int
 	CounterInaccessibleLinks int
 	ContainsLoginForm        bool
-	Error					 string
+	Error                    string
 }
 
 type heading struct {
@@ -31,19 +31,27 @@ type heading struct {
 }
 
 //BuildWebPageInfo - Build the information about the webpage
-func BuildWebPageInfo(webpage WebPage, resp *http.Response) WebPage {
-	body := utils.ReadBody(resp)
-	bodyParsed := utils.ParseBody(body)
-	webpage.HTMLVersion = checkHTMLVersion(body)
-	webpage.PageTitle = getPageTitle(bodyParsed)
-	webpage.Headings.Counterh1 = len(utils.GetHTMLElement(bodyParsed, "h1"))
-	webpage.Headings.Counterh2 = len(utils.GetHTMLElement(bodyParsed, "h2"))
-	webpage.Headings.Counterh3 = len(utils.GetHTMLElement(bodyParsed, "h3"))
-	webpage.Headings.Counterh4 = len(utils.GetHTMLElement(bodyParsed, "h4"))
-	webpage.Headings.Counterh5 = len(utils.GetHTMLElement(bodyParsed, "h5"))
-	webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(utils.GetHTMLElement(bodyParsed, "a"))
-	webpage.CounterInaccessibleLinks = countInaccessibleLinks(utils.GetLinks(bodyParsed, webpage.URL))
-	webpage.ContainsLoginForm = checkLoginFormPresence(bodyParsed)
+func BuildWebPageInfo(webpage WebPage) WebPage {
+	resp, err := http.Get(utils.FormatURL(webpage.URL))
+	if err != nil {
+		log.Println(err)
+		webpage.Error = "Invalid URL: try again"
+	}
+
+	if resp != nil {
+		body := utils.ReadBody(resp)
+		bodyParsed := utils.ParseBody(body)
+		webpage.HTMLVersion = checkHTMLVersion(body)
+		webpage.PageTitle = getPageTitle(bodyParsed)
+		webpage.Headings.Counterh1 = len(utils.GetHTMLElement(bodyParsed, "h1"))
+		webpage.Headings.Counterh2 = len(utils.GetHTMLElement(bodyParsed, "h2"))
+		webpage.Headings.Counterh3 = len(utils.GetHTMLElement(bodyParsed, "h3"))
+		webpage.Headings.Counterh4 = len(utils.GetHTMLElement(bodyParsed, "h4"))
+		webpage.Headings.Counterh5 = len(utils.GetHTMLElement(bodyParsed, "h5"))
+		webpage.CounterInternalLinks, webpage.CounterExternalLinks = countLinks(utils.GetHTMLElement(bodyParsed, "a"))
+		webpage.CounterInaccessibleLinks = countInaccessibleLinks(utils.GetLinks(bodyParsed, webpage.URL))
+		webpage.ContainsLoginForm = checkLoginFormPresence(bodyParsed)
+	}
 	return webpage
 }
 

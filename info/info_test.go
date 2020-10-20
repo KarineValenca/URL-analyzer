@@ -3,18 +3,13 @@ package info
 import (
 	"github.com/KarineValenca/URL-analyzer/utils"
 	"github.com/stretchr/testify/assert"
-	"net/http"
 	"testing"
 )
 
 func TestBuildWebPageInfo(t *testing.T) {
 	var webpage WebPage
 	webpage.URL = "https://golang.org/"
-	resp, err := http.Get(webpage.URL)
-	if err != nil {
-		t.Log(err)
-	}
-	result := BuildWebPageInfo(webpage, resp)
+	result := BuildWebPageInfo(webpage)
 	assert.Equal(t, result.URL, "https://golang.org/")
 	assert.Equal(t, result.HTMLVersion, "HTML5 doctype")
 	assert.Equal(t, result.PageTitle, "<title>The Go Programming Language</title>")
@@ -27,6 +22,16 @@ func TestBuildWebPageInfo(t *testing.T) {
 	assert.Equal(t, result.CounterExternalLinks, 7)
 	assert.Equal(t, result.CounterInaccessibleLinks, 0)
 	assert.Equal(t, result.ContainsLoginForm, false)
+	assert.Equal(t, result.Error, "")
+}
+
+func TestBuildWebPageInfoInvalidURL(t *testing.T) {
+	var webpage WebPage
+	webpage.URL = "https://invalidurl.org/"
+	result := BuildWebPageInfo(webpage)
+
+	assert.Equal(t, result.Error, "Invalid URL: try again")
+	assert.Equal(t, result.HTMLVersion, "")
 }
 
 func TestHtmlVersionHtml5(t *testing.T) {
