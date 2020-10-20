@@ -103,7 +103,7 @@ func countLinks(s []string) (int, int) {
 func countInaccessibleLinks(urls []string) int {
 	inaccessibleLinks := 0
 	for i := range urls {
-		resp, err := http.Get(urls[i])
+		resp, err := http.Get(utils.FormatURL(urls[i]))
 		if err != nil {
 			log.Println(err)
 			inaccessibleLinks++
