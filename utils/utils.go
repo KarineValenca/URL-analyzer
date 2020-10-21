@@ -15,7 +15,13 @@ func BuildURL(domain string, path string) string {
 	if strings.HasSuffix(domain, "/") {
 		domain = domain[:len(domain)-len("/")]
 	}
-	if strings.Contains(path, "http://") || strings.Contains(path, "https://") {
+
+	//verify if path is not an url and if, for some reason, doesn't starts with a /
+	if !strings.HasPrefix(path, "http") && !strings.HasPrefix(path, "/") {
+		path = "/" + path
+	}
+
+	if strings.HasPrefix(path, "http") {
 		return path
 	}
 
