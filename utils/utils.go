@@ -7,25 +7,38 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
 //BuildURL - Builds a URL in https://www.example.com/ format
 func BuildURL(domain string, path string) string {
-	if strings.HasSuffix(domain, "/") {
-		domain = domain[:len(domain)-len("/")]
+	log.Println("base domain", getBaseDomain(domain))
+	if strings.HasPrefix(path, "http") {
+		return path
 	}
 
+	// return ancor link
+	if !strings.HasPrefix(path, "http") && strings.HasPrefix(path, "#") {
+		return domain + path
+	}
+
+	domain = getBaseDomain(domain)
 	//verify if path is not an url and if, for some reason, doesn't starts with a /
 	if !strings.HasPrefix(path, "http") && !strings.HasPrefix(path, "/") {
 		path = "/" + path
 	}
 
-	if strings.HasPrefix(path, "http") {
-		return path
-	}
-
 	return domain + path
+}
+
+func getBaseDomain(s string) string {
+	url, err := url.Parse(FormatURL(s))
+	if err != nil {
+		log.Println(err)
+	}
+	domain := url.Hostname()
+	return FormatURL(domain)
 }
 
 //GetLinks - returns an array with all links found in the page

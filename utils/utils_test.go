@@ -15,7 +15,7 @@ func TestBuildURLDomainWithSlashUrlPath(t *testing.T) {
 
 	result := BuildURL(domain, url)
 
-	assert.Equal(t, result, "https://golang.org/doc/")
+	assert.Equal(t, result, "http://golang.org/doc/")
 
 }
 
@@ -25,7 +25,22 @@ func TestBuildURLDomainWithoutSlashUrlPath(t *testing.T) {
 	url := "/doc/"
 
 	result := BuildURL(domain, url)
-	assert.Equal(t, result, "https://golang.org/doc/")
+	assert.Equal(t, result, "http://golang.org/doc/")
+}
+
+func TestBuildURLWithSubPath(t *testing.T) {
+	domain := "https://golang.org/pkg/io/ioutil/"
+	url := "/doc/"
+	result := BuildURL(domain, url)
+	assert.Equal(t, result, "http://golang.org/doc/")
+}
+
+func TestBuildURLWithSubPathAndAncorLink(t *testing.T) {
+	domain := "https://golang.org/pkg/io/ioutil/"
+	url := "#example_WriteFile"
+
+	result := BuildURL(domain, url)
+	assert.Equal(t, result, "https://golang.org/pkg/io/ioutil/#example_WriteFile")
 }
 
 func TestBuildURLHttpsLink(t *testing.T) {
@@ -65,7 +80,7 @@ func TestGetLinks(t *testing.T) {
 
 	assert.Equal(t, len(result), 2)
 	assert.Contains(t, result, "https://tour.golang.org/")
-	assert.Contains(t, result, "https://golang.org/doc/copyright.html")
+	assert.Contains(t, result, "http://golang.org/doc/copyright.html")
 }
 
 func TestGetLinksWithClass(t *testing.T) {
@@ -88,7 +103,7 @@ func TestGetLinksWithClass(t *testing.T) {
 
 	assert.Equal(t, len(result), 2)
 	assert.Contains(t, result, "https://tour.golang.org/")
-	assert.Contains(t, result, "https://golang.org/doc/copyright.html")
+	assert.Contains(t, result, "http://golang.org/doc/copyright.html")
 }
 
 func TestGetLinksNoLink(t *testing.T) {
