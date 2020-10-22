@@ -2,21 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>Index</title>
 </head>
 <body>
 
+<div class="container d-flex align-items-center mt-2" style="flex-direction: column">
+<h1 class="text-xl-center">URL Analyzer</h1>
+
 {{ if .Error }}
-    <b style="color:#FF0000"> {{ .Error }} </b> <br /> <br />
+    <p class="text-sm-center" style="color:#FF0000"> {{ .Error }} </p>
 {{ end }}
 
-<form method="post">
-    <label for="url"><b>Insert the website URL:</b></label><br />
-    <input type="text" name="url" placeholder="url" required="true" value={{ .URL }}>
-    <input type="submit">
+<form class="form-inline" method="post" style="margin:10" >
+    <div class="form-row">
+        <div class="col">
+            <input type="text" class="form-control" name="url" placeholder="Insert the website URL" required="true" value={{ .URL }}>
+        </div>
+        <div class="col">
+            <button type="submit" class="btn btn-primary mb-2">Submit</button>
+        </div>
+    </div>
 </form>
-<br />
 
+
+<div>
 {{ if .HTMLVersion }}
 <b>HTML Version:</b> {{ .HTMLVersion }} <br />
 <b>Page Title:</b> {{ .PageTitle }} <br />
@@ -31,5 +41,8 @@
 <b>Counter Inaccessible Links:</b> {{ .CounterInaccessibleLinks }} <br />
 <b>Contains Login Form?</b> {{ .ContainsLoginForm }} <br />
 {{ end }}
+</div>
+
+</div>
 </body>
 </html>

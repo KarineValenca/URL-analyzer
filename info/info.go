@@ -37,6 +37,7 @@ func BuildWebPageInfo(webpage WebPage) WebPage {
 	if err != nil {
 		log.Println(err)
 		webpage.Error = "Invalid URL: try again"
+		webpage.URL = ""
 	}
 
 	if resp != nil {
