@@ -84,7 +84,6 @@ func getPageTitle(body *html.Node) string {
 	}
 
 	return "Page has no title"
-
 }
 
 func countLinks(s []string) (int, int) {

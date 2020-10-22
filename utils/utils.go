@@ -13,7 +13,6 @@ import (
 
 //BuildURL - Builds a URL in https://www.example.com/ format
 func BuildURL(domain string, path string) string {
-	log.Println("base domain", getBaseDomain(domain))
 	if strings.HasPrefix(path, "http") {
 		return path
 	}
