@@ -58,7 +58,7 @@ Wait some seconds until the app finishes the requests to the links, and you will
 
 ## Tests
 
-To execute tests, run the command:
+To execute the tests, run the command:
 
 `go test ./...` 
 
