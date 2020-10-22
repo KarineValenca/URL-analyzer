@@ -46,12 +46,12 @@ You can run this app in two ways:
 
 Insert the URL and submit:
 
-![Form](https://github.com/KarineValenca/URL-analyzer/blob/master/assets/image1.png
+![Form](https://github.com/KarineValenca/URL-analyzer/blob/master/assets/1.png
 )
 
 Wait for some seconds until the app finishes the requests to the links, and you will see the result:
 
-![Result](https://github.com/KarineValenca/URL-analyzer/blob/master/assets/image2.png)
+![Result](https://github.com/KarineValenca/URL-analyzer/blob/master/assets/2.png)
 
 > :warning: **NOTE**: 
 > Depending on the amount of links on the webpage, the application will take more time to return the results, since a request is made to each link on the webpage.
