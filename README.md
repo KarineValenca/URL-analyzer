@@ -6,7 +6,7 @@
 # URL Analyzer
 A web application to analyze web pages. The following information is provided:
 
-- HTML Version: The HTML version of the web page (eg. `HTML5 doctype`, `HTML 4.01 Strict`, `XHTML 1.1`)
+- HTML Version: The HTML version of the web page (eg. `HTML 5 Doctype`, `HTML 4.01 Strict`, `XHTML 1.1`)
 - Page Title: The `<title>` of the page.
 - Counter h1: Counter the quantity of `<h1>` tags.
 - Counter h2: Counter the quantity of `<h2>` tags.
