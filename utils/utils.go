@@ -31,6 +31,7 @@ func BuildURL(domain string, path string) string {
 	return domain + path
 }
 
+//getBaseDomain - returns the domain of URL with a http://
 func getBaseDomain(s string) string {
 	url, err := url.Parse(FormatURL(s))
 	if err != nil {
@@ -46,10 +47,8 @@ func GetLinks(body *html.Node, url string) []string {
 	var f func(*html.Node)
 	f = func(n *html.Node) {
 		if n.Type == html.ElementNode && n.Data == "a" {
-			//TODO just works if href appears just before a tag
 			for _, link := range n.Attr {
 				if link.Key == "href" {
-					//TODO change to get domain
 					url := BuildURL(url, link.Val)
 					urls = append(urls, url)
 					break
@@ -90,6 +89,7 @@ func FormatURL(url string) string {
 	return "http://" + url
 }
 
+//formatHTML - return the *html.Node element as a string
 func formatHTML(element *html.Node) string {
 	var buffer bytes.Buffer
 	w := io.Writer(&buffer)

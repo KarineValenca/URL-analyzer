@@ -22,6 +22,7 @@ type WebPage struct {
 	Error                    string
 }
 
+//heading - a struct to hold headings counters
 type heading struct {
 	Counterh1 int
 	Counterh2 int
@@ -55,9 +56,10 @@ func BuildWebPageInfo(webpage WebPage) WebPage {
 	return webpage
 }
 
+//checkHTMLVersion - returns the HTML version of the web page
 func checkHTMLVersion(body []byte) string {
 	var htmlVersionMap = map[string]string{
-		"HTML5 doctype":          "<!DOCTYPE html>",
+		"HTML 5 Doctype":         "<!DOCTYPE html>",
 		"HTML 4.01 Transitional": "DTD HTML 4.01 Transitional",
 		"HTML 4.01 Frameset":     "DTD HTML 4.01 Frameset",
 		"HTML 4.01 Strict":       "DTD HTML 4.01",
@@ -77,6 +79,7 @@ func checkHTMLVersion(body []byte) string {
 	return "Couldn't find HTML version"
 }
 
+//getPageTitle - returns the first <title> found in page
 func getPageTitle(body *html.Node) string {
 	titles := utils.GetHTMLElement(body, "title")
 	if len(titles) > 0 {
@@ -86,6 +89,7 @@ func getPageTitle(body *html.Node) string {
 	return "Page has no title"
 }
 
+//countLinks - returns the quantity of internal links and external links
 func countLinks(s []string) (int, int) {
 	externalLinks := 0
 	internalLinks := 0
@@ -99,6 +103,7 @@ func countLinks(s []string) (int, int) {
 	return internalLinks, externalLinks
 }
 
+//countInaccessibleLinks - returns the quantity of links that returned a 400 or a 500 status, or that returned an error
 func countInaccessibleLinks(urls []string) int {
 	inaccessibleLinks := 0
 	for i := range urls {
@@ -116,6 +121,7 @@ func countInaccessibleLinks(urls []string) int {
 	return inaccessibleLinks
 }
 
+//checkLoginFormPresence - checks if the page includes <inputs> with labels email or username, AND password
 func checkLoginFormPresence(body *html.Node) bool {
 	containsEmail := false
 	containsPassword := false
