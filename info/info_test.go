@@ -11,7 +11,7 @@ func TestBuildWebPageInfo(t *testing.T) {
 	webpage.URL = "https://golang.org/"
 	result := BuildWebPageInfo(webpage)
 	assert.Equal(t, result.URL, "https://golang.org/")
-	assert.Equal(t, result.HTMLVersion, "HTML5 doctype")
+	assert.Equal(t, result.HTMLVersion, "HTML 5 Doctype")
 	assert.Equal(t, result.PageTitle, "<title>The Go Programming Language</title>")
 	assert.Equal(t, result.Headings.Counterh1, 1)
 	assert.Equal(t, result.Headings.Counterh2, 3)
@@ -46,7 +46,7 @@ func TestHtmlVersionHtml5(t *testing.T) {
 		</body>`)
 
 	result := checkHTMLVersion(body)
-	assert.Equal(t, result, "HTML5 doctype")
+	assert.Equal(t, result, "HTML 5 Doctype")
 }
 
 func TestHtmlVersionHtml4(t *testing.T) {
