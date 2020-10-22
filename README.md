@@ -53,6 +53,9 @@ Wait some seconds until the app finishes the requests to the links, and you will
 
 ![Result](https://github.com/KarineValenca/URL-analyzer/blob/master/assets/image2.png)
 
+> :warning: **NOTE**: 
+> Depending on the amount of links on the webpage, the application will take more time to return the results, since a request is made to each link on the webpage.
+
 ## Tests
 
 To execute tests, run the command:
