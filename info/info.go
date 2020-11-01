@@ -104,8 +104,19 @@ func countLinks(s []string) (int, int) {
 	return internalLinks, externalLinks
 }
 
-//countInaccessibleLinks - returns the quantity of links that returned a 400 or a 500 status, or that returned an error
+//countInaccessibleLinks - returns the quantity of inaccessible links
 func countInaccessibleLinks(urls []string) int {
+	c := make(chan int)
+	go accessURL(urls[:len(urls)/2], c)
+	go accessURL(urls[len(urls)/2:], c)
+	counterFirstHalf, counterSecondHalf := <-c, <-c
+	inaccessibleLinks := counterFirstHalf + counterSecondHalf
+	return inaccessibleLinks
+}
+
+//accessURL - does a get request to each url in the page and set to a channel 
+// the quantity of links that returned a 400 or a 500 status, or that returned an error
+func accessURL(urls []string, c chan int) {
 	inaccessibleLinks := 0
 	for i := range urls {
 		resp, err := http.Get(utils.FormatURL(urls[i]))
@@ -119,7 +130,8 @@ func countInaccessibleLinks(urls []string) int {
 			inaccessibleLinks++
 		}
 	}
-	return inaccessibleLinks
+
+	c <- inaccessibleLinks
 }
 
 //checkLoginFormPresence - checks if the page includes <inputs> with labels email or username, AND password
